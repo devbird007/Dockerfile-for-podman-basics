@@ -1,21 +1,16 @@
-FROM rhel7.3
+FROM rhel7:7.5
 
-LABEL description="This is a custom httpd container image" \
-maintainer="John Doe" \
-email="jdoe@xyz.com"
+LABEL name "Emmanuel Taiwo" \
+email "mars@gmail.com" \
+description "A custom apache image"
 
-RUN yum install -y httpd
+ADD training.repo /etc/yum.repos.d/training.repo
+
+RUN yum install -y httpd && \
+    yum clean all
+
+RUN echo "Hello from Dockerfile" > /usr/share/httpd/noindex/index.html
 
 EXPOSE 80
 
-ENV LogLevel "info"
-
-ADD http://someserver.com/filename.pdf /var/www/html
-
-COPY ./src/ /var/www/html/
-
-USER apache
-
-ENTRYPOINT ["/usr/sbin/httpd"]
-
-CMD ["-D", "FOREGROUND"]
+ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
